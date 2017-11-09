@@ -1,6 +1,8 @@
 import h5py
 import os
 
+LIMBS = 16
+
 
 class H5(object):
 	"""H5 Dataset Base"""
@@ -11,6 +13,7 @@ class H5(object):
 		try:
 			self.group = h5py.File(self.file_path, mode) if auto_set else None
 		except Exception as e:
+			print('[Exception] H5.__init__ failed')
 			raise e
 
 	def set(self):
@@ -18,8 +21,8 @@ class H5(object):
 		try:
 			self.group = h5py.File(self.file_path, mode)
 		except Exception as e:
-			raise e
 			print('[Exception] H5.set failed')
+			raise e
 
 	def count(self):
 		try:
@@ -41,7 +44,7 @@ class H5(object):
 
 
 class Input(H5):
-	"""Input File: S2d(n,16,2), rank(n,16), rankMat(n,16,16)"""
+	"""Input File: S2d(n,LIMBS,2), rank(n,LIMBS), rankMat(n,LIMBS,LIMBS)"""
 	def __init__(self, base_path, file_name, read_only=True):
 		super(Input, self).__init__(base_path, file_name, read_only, True)
 		self.S2d = self.S2d()
@@ -60,7 +63,7 @@ class Input(H5):
 
 
 class Target(H5):
-	"""Target File: Idx(n), S2d(n,16,2), S3d(n,16,3), center(n,2), rank(n,16), scale(n)"""
+	"""Target File: Idx(n), S2d(n,LIMBS,2), S3d(n,LIMBS,3), center(n,2), rank(n,LIMBS), scale(n)"""
 	def __init__(self, base_path, file_name, read_only=True):
 		super(Target, self).__init__(base_path, file_name, read_only, True)
 		self.Idx = self.Idx()

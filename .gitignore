@@ -1,5 +1,6 @@
+.DS_Store
 .idea/
 *.pyc
 *.tar.gz
 myDataset/*.h5
-annot/*.h5
+h36m/annot/*.h5
