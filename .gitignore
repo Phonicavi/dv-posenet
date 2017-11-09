@@ -1,0 +1,5 @@
+.idea/
+*.pyc
+*.tar.gz
+myDataset/*.h5
+annot/*.h5
