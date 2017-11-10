@@ -16,7 +16,7 @@ def h5_initialize(base_dir):
 		Target(base_dir, target_list[0]), Target(base_dir, target_list[1]))
 
 
-def dataset_process(base_dir, _set, _list):
+def dataset_process(base_dir, save_dir, thick, _set, _list):
 	[ipt, tgt] = _set
 	num = len(_list)
 	if num != ipt.count() or num != tgt.count():
@@ -24,18 +24,18 @@ def dataset_process(base_dir, _set, _list):
 	for i in range(num):
 		fn = _list[i]
 		fp = os.path.join(base_dir, fn)
+		sfn = "%s._marked.png" % fn[:-4]
+		sfp = os.path.join(save_dir, sfn)
 		print("[%d/%d] >> %s" % (i + 1, num, fn))
 		# show_rank(ipt.rank[i])
 		# show_rankMat(ipt.rankMat[i])
-		# print(tgt.S3d[i])
-		# sk.draw_skel3D_16(tgt.S3d[i])
-		# print(tgt.S2d[i])
-		img = cv2.cvtColor(cv2.imread(fp, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
-		sk.draw_skel2D_16(tgt.S2d[i], img, color=(15,255,78), thick=3)
+		raw_img = cv2.cvtColor(cv2.imread(fp, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
+		img = sk.draw_vec_skel2D_16(tgt.S2d[i], ipt.rankMat[i], raw_img, thick)
+		cv2.imwrite(sfp, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
 		plt.imshow(img)
 		plt.show()
 		break
-	print(' >>> ')
+	print('[DataProc] set finished ... ')
 
 
 def show_rank(mat):
@@ -59,6 +59,7 @@ if __name__ == "__main__":
 
 	bp_annot = option.path_ann
 	bp_img = option.path_img
+	bp_img_marked = option.path_img_marked
 
 	t_input, v_input, t_target, v_target = h5_initialize(option.dir_data)
 	train_set = [t_input, t_target]
@@ -68,5 +69,5 @@ if __name__ == "__main__":
 	pairs = [(train_set, train_list), (valid_set, valid_list)]
 
 	for _s, _l in pairs:
-		dataset_process(bp_img, _s, _l)
+		dataset_process(bp_img, bp_img_marked, option.thick, _s, _l)
 		break  # train_set first

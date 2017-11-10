@@ -8,6 +8,7 @@ import math
 import h5py
 import os
 from mpl_toolkits.mplot3d import Axes3D
+from visualize import generate_arrow
 
 
 # Following graphic model is based on Human3.6M
@@ -60,6 +61,23 @@ def draw_skel2D_16(skel2, image, color, thick):
         x0, y0 = skel2[limb[0],:]
         x1, y1 = skel2[limb[1],:]
         cv2.line(image, (int(x0), int(y0)), (int(x1), int(y1)), color, thick)
+    return image
+
+
+def draw_vec_skel2D_16(skel2, rankmat, image, thick):
+    kinematic = get_poseKinematic16()
+    for limb in kinematic:
+        i = limb[0]
+        j = limb[1]
+        x0, y0 = skel2[i,:]
+        x1, y1 = skel2[j,:]
+        vert_i = (int(x0), int(y0))
+        vert_j = (int(x1), int(y1))
+        prob_i = rankmat[i][j]
+        prob_j = rankmat[j][i]
+        # decide pStart & pEnd & color
+        pStart, pEnd, color = generate_arrow(i, j, vert_i, vert_j, prob_i, prob_j)
+        cv2.arrowedLine(image, pStart, pEnd, color, thick)
     return image
 """
 def draw_skel3D(skel3, ax):

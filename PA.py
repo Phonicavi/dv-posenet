@@ -10,6 +10,10 @@ def parse_args():
 		default="/Users/Phonic/Documents/G/Course/Graduate/Lab/Code/h36m/annot/")
 	parser.add_option("-i", "--images-path", type="string", dest="path_img", 
 		default="/Users/Phonic/Documents/G/Course/Graduate/Lab/Code/h36m/images/")
+	parser.add_option("-m", "--marked-path", type="string", dest="path_img_marked", 
+		default="/Users/Phonic/Documents/G/Course/Graduate/Lab/Code/h36m/images_marked/")
+	parser.add_option("-w", "--thickness", type="int", dest="thick", 
+		default=2)
 	options, arguments = parser.parse_args()
 
 	return options
