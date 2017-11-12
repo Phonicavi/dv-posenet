@@ -21,7 +21,7 @@ def dataset_process(base_dir, save_dir, thick, _set, _list):
 	num = len(_list)
 	if num != ipt.count() or num != tgt.count():
 		return None
-	for i in range(num):
+	for i in range(1000):
 		fn = _list[i]
 		fp = os.path.join(base_dir, fn)
 		sfn = "%s._marked.png" % fn[:-4]
@@ -30,11 +30,15 @@ def dataset_process(base_dir, save_dir, thick, _set, _list):
 		# show_rank(ipt.rank[i])
 		# show_rankMat(ipt.rankMat[i])
 		raw_img = cv2.cvtColor(cv2.imread(fp, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
-		img = sk.draw_vec_skel2D_16(tgt.S2d[i], ipt.rankMat[i], raw_img, thick)
+		img2 = sk.draw_vec_skel2D_16(ipt.S2d[i], ipt.rankMat[i], raw_img, thick, tgt.S3d[i])
+		#img2 = sk.draw_wrongs_skel2D_16(ipt.S2d[i], ipt.rankMat[i], raw_img, thick, tgt.S3d[i])
+
+		img = sk.draw_skel2D_16(tgt.S2d[i], img2, (255,255,255) ,1)
 		cv2.imwrite(sfp, cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
-		plt.imshow(img)
-		plt.show()
-		break
+	# 	plt.imshow(img)
+	# 	plt.pause(0.001)
+    #
+	# plt.show()
 	print('[DataProc] set finished ... ')
 
 
@@ -66,8 +70,8 @@ if __name__ == "__main__":
 	valid_set = [v_input, v_target]
 	train_list = load_names(bp_annot, "train_images.txt")
 	valid_list = load_names(bp_annot, "valid_images.txt")
-	pairs = [(train_set, train_list), (valid_set, valid_list)]
+	pairs = [(valid_set, valid_list), (train_set, train_list)]
 
 	for _s, _l in pairs:
 		dataset_process(bp_img, bp_img_marked, option.thick, _s, _l)
-		break  # train_set first
+		#break  # train_set first

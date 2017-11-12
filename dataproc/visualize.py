@@ -14,4 +14,4 @@ def generate_arrow(i, j, v0, v1, p0, p1):
 
 def confidence_color(p0, p1):
 	doll = min(255, max(0, int(abs(p0-p1)*255)))
-	return (doll, 24, 255-doll)
+	return (doll, 0, 255-doll)
