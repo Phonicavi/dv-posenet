@@ -56,15 +56,17 @@ def draw_gt_skel2D(skel2, image, color, thick):
 
 
 def draw_skel2D_16(skel2, image, color, thick):
+    img = image
     kinematic = get_poseKinematic16()
     for limb in kinematic:
         x0, y0 = skel2[limb[0],:]
         x1, y1 = skel2[limb[1],:]
-        cv2.line(image, (int(x0), int(y0)), (int(x1), int(y1)), color, thick)
-    return image
+        cv2.line(img=img, pt1=(int(x0), int(y0)), pt2=(int(x1), int(y1)),
+                 color=color, thickness=thick)
+    return img
 
 
-def draw_vec_skel2D_16(skel2, rankmat, image, thick):
+def draw_vec_skel2D_16(skel2, rankmat, image, thick, skel3):
     kinematic = get_poseKinematic16()
     for limb in kinematic:
         i = limb[0]
@@ -77,8 +79,34 @@ def draw_vec_skel2D_16(skel2, rankmat, image, thick):
         prob_j = rankmat[j][i]
         # decide pStart & pEnd & color
         pStart, pEnd, color = generate_arrow(i, j, vert_i, vert_j, prob_i, prob_j)
+        color = (0,0,255)
+        if ((skel3[i,2]-skel3[j,2])*(prob_i-0.5) < 0):
+            color = (255,0,0)
+
         cv2.arrowedLine(image, pStart, pEnd, color, thick)
     return image
+
+def draw_wrongs_skel2D_16(skel2, rankmat, image, thick, skel3):
+    kinematic = get_poseKinematic16()
+    for i in range(16):
+        for j in range(16):
+            if (i == j):
+                continue
+            x0, y0 = skel2[i,:]
+            x1, y1 = skel2[j,:]
+            vert_i = (int(x0), int(y0))
+            vert_j = (int(x1), int(y1))
+            prob_i = rankmat[i][j]
+            prob_j = rankmat[j][i]
+            # decide pStart & pEnd & color
+            pStart, pEnd, color = generate_arrow(i, j, vert_i, vert_j, prob_i, prob_j)
+            color = (0,0,255)
+            if ((skel3[i,2]-skel3[j,2])*(prob_i-0.5) < 0):
+                color = (255,0,0)
+                cv2.arrowedLine(image, pStart, pEnd, color, thick)
+    return image
+
+
 """
 def draw_skel3D(skel3, ax):
     kinematic = get_poseKinematic()
